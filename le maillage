@@ -72,3 +72,17 @@ def nuage(N,xmin,xmax,e):
     plt.scatter(X,Y,c="r",s=10)
     plt.axis("equal")
     plt.show()
+    
+    
+def trouver_pointv2(Point,NP):
+    P=np.array(Point)
+    D=[]
+    for k in range(len(NP)):
+        D=D+[np.linalg.norm(P-np.array(NP[k][1]))]
+    L=list(D)
+    p1=L.index(min(L))+1
+    L[p1-1]=1000
+    p2=L.index(min(L))+1
+    L[p2-1]=1000
+    p3=L.index(min(L))+1
+    return([p1,p2,p3])
