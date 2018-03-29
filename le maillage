@@ -74,7 +74,7 @@ def nuage(N,xmin,xmax,e):
     plt.show()
     
     
-def trouver_pointv2(Point,NP):
+def trouver_pointv2(Point,NP):          #NP est la liste des points du maillage et Point les coordonnées du point du maillage
     P=np.array(Point)
     D=[]
     for k in range(len(NP)):
