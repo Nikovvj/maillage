@@ -74,15 +74,18 @@ def nuage(N,xmin,xmax,e):
     plt.show()
     
     
-def trouver_pointv2(Point,NP):          #NP est la liste des points du maillage et Point les coordonnées du point du maillage
-    P=np.array(Point)
-    D=[]
-    for k in range(len(NP)):
-        D=D+[np.linalg.norm(P-np.array(NP[k][1]))]
-    L=list(D)
-    p1=L.index(min(L))+1
-    L[p1-1]=1000
-    p2=L.index(min(L))+1
-    L[p2-1]=1000
-    p3=L.index(min(L))+1
-    return([p1,p2,p3])
+def point_dans_triangle(point,triangle):        #Test si un point est dans un triangle ou pas, et renvoie True si c'est le cas
+    p1,p2,p3=triangle
+    xa,xb,xc=p1[0],p2[0],p3[0]
+    ya,yb,yc=p1[1],p2[1],p3[1]
+    x,y=point[0],point[1]
+    s1=(x-xa)*(y-yb)-(y-ya)*(x-xb)
+    s2=(x-xb)*(y-yc)-(y-yb)*(x-xc)
+    s3=(x-xc)*(y-ya)-(y-yc)*(x-xa)
+    plt.plot([xa,xb,xc,xa],[ya,yb,yc,ya])
+    plt.scatter(x,y)
+    plt.show()
+    if s1*s2>0 and s2*s3>0:
+        return(True)
+    else:
+        return(False)
