@@ -89,3 +89,10 @@ def point_dans_triangle(point,triangle):        #Test si un point est dans un tr
         return(True)
     else:
         return(False)
+
+def trouver_triangle(point,T,NP):       #Parcours le maillage T pour trouver dans quel triangle est le point, NP sont les points associés à leurs coordonnées
+    for triangle in T:
+        i1,i2,i3=triangle
+        p1,p2,p3=NP[i1-1][1],NP[i2-1][1],NP[i3-1][1]
+        if point_dans_triangle(point,[p1,p2,p3])==True:
+            return(triangle)
