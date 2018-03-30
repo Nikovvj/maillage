@@ -1,3 +1,3 @@
-# maillage
+# Maillage 
 
-Je découvre Git
+Projet sur le maillage triangulaire en dimension 2, Sorbonne Université.
