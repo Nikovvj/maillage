@@ -96,3 +96,19 @@ def trouver_triangle(point,T,NP):       #Parcours le maillage T pour trouver dan
         p1,p2,p3=NP[i1-1][1],NP[i2-1][1],NP[i3-1][1]
         if point_dans_triangle(point,[p1,p2,p3])==True:
             return(triangle)
+
+def de_Delaunay(T1,point):      #Permet de savoir si deux triangles sont de Delaunay 
+    p1,p2,p3=T1
+    x1,y1=p1
+    x2,y2=p2
+    x3,y3=p3
+    A=(y2-y1)*(x3**2-x2**2+y3**2-y2**2)-(y3-y2)*(x2**2-x1**2+y2**2-y1**2)
+    B=(y3-y2)*(x2-x1)-(y2-y1)*(x3-x2)
+    if B!=0:
+        Cx=(1/2)*(A/B)
+        Cy=-(x2-x1)/(y2-y1)*Cx+(x2**2-x1**2+y2**2-y1**2)/(2*(y2-y1))
+        R=np.linalg.norm(np.array([Cx,Cy])-np.array(p1))
+        if np.linalg.norm(np.array(point)-np.array([Cx,Cy]))<R:
+            return False
+        else:
+            return True 
