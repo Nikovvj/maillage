@@ -106,7 +106,7 @@ def cercle(x0,y0,R):                    #Permet de tracer un cercle de centre (x
     plt.plot(X, Y)
     plt.axis("equal")
 
-def de_Delaunay(T1,point):              #Permet de savoir si deux triangle sont de Delaunay
+def de_Delaunay(T1,point):              #Permet de savoir si deux triangles sont de Delaunay
     p1,p2,p3=T1
     x1,y1=p1
     x2,y2=p2
