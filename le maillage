@@ -161,3 +161,14 @@ def est_Delaunay(T1,T2):                    #Pour deux triangles donnés, cette 
     else:
         return(False)
     
+    def voisin(maillage,t):                 #permet de trouver tous les voisins d'un triangle dans un maillage
+    p1,p2,p3=t
+    voisin=[]
+    for triangle in maillage:
+        if p1 in triangle and p2 in triangle and p3 not in triangle:
+            voisin=voisin+[triangle]
+        if p1 in triangle and p3 in triangle and p2 not in triangle:
+            voisin=voisin+[triangle]
+        if p2 in triangle and p3 in triangle and p1 not in triangle:
+            voisin=voisin+[triangle]
+    return(voisin)
