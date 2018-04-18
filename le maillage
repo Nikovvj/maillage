@@ -48,17 +48,49 @@ def maillage_carre(n,m):
         plt.triplot([x1,x2,x3],[y1,y2,y3])
     plt.show()
     return(T)
+
+def maillage_carre(n,m):            #Une autre version avec une numérotation des points et triangles implicite
+    X=[x/(n-1) for x in range(n)]
+    Y=[y/(m-1) for y in range(m)]
+    N=n*m
+    NP=[]       #Va contenir les numéros associés aux points 
     
-def arretes(L):
+    T=[]        #Va contenir les numéros des triangles associés à leurs points
+    T_sup=[]
+    T_inf=[]
+    for y in Y:
+        for x in X:
+            NP=NP+[[x,y]]       #On assosie à chaque point un numéro
+            
+    
+    for l in range(1,N-n,n):        
+        for i in range(l,l+n-1):
+            T_sup=T_sup+[[i,i+n,i+n+1]]     
+            T_inf=T_inf+[[i,i+1,i+n+1]]      
+                                            
+    T=T_sup+T_inf
+    for i in range(m):
+        plt.plot([0,1],[i/(m-1),i/(m-1)],c="b")         #On construit le quadrillage du carré unité
+    for i in range(n):
+        plt.plot([i/(n-1),i/(n-1)],[0,1],c="b")
+    plt.axis("equal")
+    
+    lt=len(T)
+    for i in range(lt):
+        p1,p2,p3=T[i]
+        x1,x2,x3=NP[p1-1][0],NP[p2-1][0],NP[p3-1][0]       #On construit les triangles
+        y1,y2,y3=NP[p1-1][1],NP[p2-1][1],NP[p3-1][1]
+        plt.triplot([x1,x2,x3],[y1,y2,y3])
+    plt.show()
+    return(T,NP)
+
+def aretes(L):
     A=[]
     for p in range(len(L)):
         i,j,k=L[p][1]
         A=A+[[[i,j],[j,k],[k,i]]]
     return(A)
 
-from random import *
-import matplotlib.pyplot as plt
-import numpy as np
 
 def nuage(N,xmin,xmax,e):
     L=[np.array([xmin+(xmax-xmin)*random(),xmin+(xmax-xmin)*random()])]
@@ -100,7 +132,7 @@ def point_dans_triangle(point,triangle):        #Test si un point est dans un tr
 def trouver_triangle(point,T,NP):       #Parcours le maillage T pour trouver dans quel triangle est le point, NP sont les points associés à leurs coordonnées
     for triangle in T:
         i1,i2,i3=triangle
-        p1,p2,p3=NP[i1-1][1],NP[i2-1][1],NP[i3-1][1]
+        p1,p2,p3=NP[i1-1],NP[i2-1],NP[i3-1]
         if point_dans_triangle(point,[p1,p2,p3])==True:
             return(triangle)
 
@@ -133,8 +165,8 @@ def est_dans_cercle(T1,point):              #Permet de savoir si pour un triangl
     B=np.array([[(x2**2-x1**2+y2**2-y1**2)/2],[(x3**2-x1**2+y3**2-y1**2)/2]])
     X=np.linalg.solve(A,B)
     R=np.linalg.norm(X-np.array([[x1],[y1]]))
-
-    if np.linalg.norm(np.array([[point[0]],[point[1]]])-X)<R:
+    D=np.linalg.norm(np.array([[point[0]],[point[1]]])-X)
+    if D<R-10**(-6):
         return True
     else:
         return False
@@ -184,3 +216,10 @@ def Delaunay_global(maillage):          #Vérifie si un maillage est Delaunay
             if est_Delaunay(v,triangle)==False:
                 return(False)
     return(True)
+
+def maillage_bis(maillage,nuage_point):     #Permet d'établir une liste de triangle avec leurs coordonnées (au lieux des points)
+    n_maillage=[]
+    for t in maillage:
+        p1,p2,p3=t
+        n_maillage=n_maillage+[[nuage_point[p1-1],nuage_point[p2-1],nuage_point[p3-1]]]
+    return(n_maillage) 
