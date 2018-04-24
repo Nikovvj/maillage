@@ -241,6 +241,14 @@ def maillage_bis(maillage,nuage_point):     #Permet d'établir une liste de tria
         n_maillage=n_maillage+[[nuage_point[p1-1],nuage_point[p2-1],nuage_point[p3-1]]]
     return(n_maillage) 
 
+def arete_dans_triangle(arete,triangle):
+    A=set(arete)
+    t1,t2,t3=triangle
+    if A=={t1,t2} or A=={t2,t3} or A=={t1,t3}:
+        return True
+    else:
+        return False
+
 def bowyer_watson(maillage,nuage_point,point):
     Cavite=[]
     N_maillage=[]
