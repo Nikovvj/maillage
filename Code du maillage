@@ -156,45 +156,62 @@ def cercle_circonscrit(T):              #Permet de renvoyer le centre et le rayo
     R=np.linalg.norm(X-np.array([[x1],[y1]]))
     return(X,R)
 
-def est_dans_cercle(T1,point):              #Permet de savoir si pour un triangle et un point donné, le point est dans le cercle circonscrit au triangle
+          
+def est_dans_cercle(T1,point,nuage_point):           #Permet de savoir si pour un triangle et un point donné, le point est dans le cercle circonscrit au triangle
     p1,p2,p3=T1
-    x1,y1=p1
-    x2,y2=p2
-    x3,y3=p3
+    x1,y1=nuage_point[p1-1]
+    x2,y2=nuage_point[p2-1]
+    x3,y3=nuage_point[p3-1]
     A=np.array([[x2-x1,y2-y1],[x3-x1,y3-y1]])
     B=np.array([[(x2**2-x1**2+y2**2-y1**2)/2],[(x3**2-x1**2+y3**2-y1**2)/2]])
     X=np.linalg.solve(A,B)
     R=np.linalg.norm(X-np.array([[x1],[y1]]))
+    Cx,Cy=X
+#    cercle(Cx,Cy,R)
+#    plt.plot([x1,x2,x3,x1],[y1,y2,y3,y1])
+#    plt.scatter(Cx,Cy)
+#    plt.scatter(point[0],point[1])
+#    plt.show()
     D=np.linalg.norm(np.array([[point[0]],[point[1]]])-X)
     if D<R-10**(-6):
         return True
     else:
         return False
-
-def est_Delaunay(T1,T2):                    #Pour deux triangles donnés, cette fonction renvoie si les deux triangles sont Delaunay
-    p1,p2,p3=T1
-    p4,p5,p6=T2
+                 
+def est_Delaunay(T1,T2,nuage_point):         #Pour deux triangles donnés, cette fonction renvoie si les deux triangles sont Delaunay
+    t1,t2,t3=T1
+    t4,t5,t6=T2
+    p1,p2,p3=nuage_point[t1-1],nuage_point[t2-1],nuage_point[t3-1]
+    p4,p5,p6=nuage_point[t4-1],nuage_point[t5-1],nuage_point[t6-1]
+   
     T_1=T1[:]
     T_2=T2[:]
+    
     for p in T1:
         if p in T2:
             T_1.remove(p)
     for p in T2:    
         if p in T1:
             T_2.remove(p)
-    point1=T_1[0]
-    point2=T_2[0]
-    X1,R1=cercle_circonscrit(T1)
-    X2,R2=cercle_circonscrit(T2)
-    plt.plot([p1[0],p2[0],p3[0],p1[0]],[p1[1],p2[1],p3[1],p1[1]])
-    plt.plot([p4[0],p5[0],p6[0],p4[0]],[p4[1],p5[1],p6[1],p4[1]])
+    
+    sommet1=T_1[0]
+    sommet2=T_2[0]
+    point1=nuage_point[sommet1-1]
+    point2=nuage_point[sommet2-1]
+    
+    X1,R1=cercle_circonscrit([p1,p2,p3])
+    X2,R2=cercle_circonscrit([p4,p5,p6])
+    
+    plt.triplot([p1[0],p2[0],p3[0],p1[0]],[p1[1],p2[1],p3[1],p1[1]])
+    plt.triplot([p4[0],p5[0],p6[0],p4[0]],[p4[1],p5[1],p6[1],p4[1]])
     cercle(X1[0],X1[1],R1)
     cercle(X2[0],X2[1],R2)
    
-    if est_dans_cercle(T1,point2)==True or est_dans_cercle(T2,point1)==True:
+    if est_dans_cercle(T1,point2,nuage_point)==True or est_dans_cercle(T2,point1,nuage_point)==True:
         return(False)
     else:
         return(True)
+    
     
 def voisin(maillage,t):                 #permet de trouver tous les voisins d'un triangle dans un maillage
     p1,p2,p3=t
@@ -208,12 +225,12 @@ def voisin(maillage,t):                 #permet de trouver tous les voisins d'un
             voisin=voisin+[triangle]
     return(voisin)
 
-def Delaunay_global(maillage):          #Vérifie si un maillage est Delaunay
+def Delaunay_global(maillage,nuage_point):          #Vérifie si un maillage est Delaunay
     
     for triangle in maillage:
         voisins=voisin(maillage,triangle)
         for v in voisins:
-            if est_Delaunay(v,triangle)==False:
+            if est_Delaunay(v,triangle,nuage_point)==False:
                 return(False)
     return(True)
 
@@ -223,3 +240,61 @@ def maillage_bis(maillage,nuage_point):     #Permet d'établir une liste de tria
         p1,p2,p3=t
         n_maillage=n_maillage+[[nuage_point[p1-1],nuage_point[p2-1],nuage_point[p3-1]]]
     return(n_maillage) 
+
+def bowyer_watson(maillage,nuage_point,point):
+    Cavite=[]
+    N_maillage=[]
+    nouveau_point=len(nuage_point)+1
+    
+    
+    for t in maillage:
+        if est_dans_cercle(t,point,nuage_point):
+            Cavite=Cavite+[t]
+    
+    for t in Cavite:
+        maillage.remove(t)
+    
+    for t in Cavite:
+        t1,t2,t3=t
+        Liste=Cavite[:]
+        Liste.remove(t)
+       
+        for T in Liste:
+           B=True
+           if  arete_dans_triangle([t1,t2],T):
+                B=False
+                break
+        if B:
+            N_maillage=N_maillage+[[t1,t2,nouveau_point]]    
+        
+        
+        for T in Liste: 
+            B=True
+            if  arete_dans_triangle([t2,t3],T):
+                B=False
+                break
+            
+        if B:
+            N_maillage=N_maillage+[[t2,t3,nouveau_point]]
+        
+        for T in Liste:        
+            B=True
+            if arete_dans_triangle([t1,t3],T):
+                B=False
+                break
+           
+        if B:
+            N_maillage=N_maillage+[[t1,t3,nouveau_point]]
+                
+        
+    return(maillage+N_maillage,nuage_point+[point])  
+
+def afficher_maillage(maillage,nuage_point):
+    N=nuage_point
+    for t in maillage:
+        t1,t2,t3=t
+        x1,y1=N[t1-1]
+        x2,y2=N[t2-1]
+        x3,y3=N[t3-1]
+        plt.triplot([x1,x2,x3],[y1,y2,y3])
+    plt.show()
