@@ -66,3 +66,41 @@ def mesure_temps1(fct,n):
     a = fct(n)
     fin = time.clock()
     return (fin-debut)
+    
+    
+    
+  # Nouvelle version de nuage  
+    
+def nuage(N,xmin,xmax,e):
+    L=[np.array([xmin+(xmax-xmin)*random(),xmin+(xmax-xmin)*random()])]
+    X=[]
+    Y=[]
+    j=0
+    for j in range(N):
+        x,y=xmin+(xmax-xmin)*random(),xmin+(xmax-xmin)*random()
+        ok = True;
+        for i in range(len(L)-1):
+            if np.linalg.norm(L[i]-L[-1])<e:
+                ok = False
+                break
+        maxit = 10000;
+        it = 0
+        while(ok==True and it < maxit):
+            it = it +1
+            x,y=xmin+(xmax-xmin)*random(),xmin+(xmax-xmin)*random()
+            for i in range(len(L)-1):
+                if np.linalg.norm(L[i]-L[-1])<e:
+                    ok = False
+                    break
+        
+        L.append(np.array([x,y]))
+        X.append(x)
+        Y.append(y)
+    plt.plot([xmin,xmax,xmax,xmin,xmin],[xmin,xmin,xmax,xmax,xmin])    
+    plt.scatter(X,Y,c="r",s=10)
+    plt.axis("equal")
+    plt.show()
+    
+    
+    
+    
