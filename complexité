@@ -1,0 +1,68 @@
+from __future__ import division 
+import time
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def graph(fonction,nbr_var,N,s,f,g,quelle_var):
+    x=range(100,N*100,100)
+    y=[]
+    if quelle_var == 1:
+        for i in x:
+            y.insert(i,mesure_temps(fonction,nbr_var,i,s,f,g))
+    elif quelle_var == 2:
+        for i in x:
+            y.insert(i,mesure_temps(fonction,nbr_var,s,i,f,g))
+    elif quelle_var == 3:
+        for i in x:
+            y.insert(i,mesure_temps(fonction,nbr_var,s,f,i,g))
+    elif quelle_var == 4:
+        for i in x:
+            y.insert(i,mesure_temps(fonction,nbr_var,s,f,g,i))
+    else : return('impossible')
+    plt.plot(x,y)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.show()
+    
+    
+
+
+
+
+
+def mesure_temps(fct,nbr_variables,a,b,c,d):
+    if nbr_variables == 1 : return(mesure_temps1(fct,a))
+    elif nbr_variables == 2 : return(mesure_temps2(fct,a,b))
+    elif nbr_variables == 3 : return(mesure_temps3(fct,a,b,c))
+    elif nbr_variables == 4 : return(mesure_temps4(fct,a,b,c,d))
+    else : return("impossible")
+ 
+def mesure_temps4(fct,n,m,p,q):
+    
+    debut = time.clock()
+    a = fct(n,m,p,q)
+    fin = time.clock()
+    return (fin-debut)   
+
+    
+def mesure_temps3(fct,n,m,p):
+    
+    debut = time.clock()
+    a = fct(n,m,p)
+    fin = time.clock()
+    return (fin-debut)    
+
+def mesure_temps2(fct,n,m):
+    
+    debut = time.clock()
+    a = fct(n,m)
+    fin = time.clock()
+    return (fin-debut)
+
+def mesure_temps1(fct,n):
+    
+    debut = time.clock()
+    a = fct(n)
+    fin = time.clock()
+    return (fin-debut)
